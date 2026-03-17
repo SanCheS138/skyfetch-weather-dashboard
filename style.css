@@ -192,3 +192,108 @@ h1 {
     padding: 30px;
     color: #555;
 }
+/* ===============================
+   FORECAST SECTION
+=============================== */
+.forecast-section {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #eee;
+}
+
+.forecast-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+/* ===============================
+   FORECAST GRID
+=============================== */
+.forecast-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+
+/* ===============================
+   FORECAST CARD
+=============================== */
+.forecast-card {
+    background: linear-gradient(135deg, #f5f7fa, #e4ecff);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.forecast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ===============================
+   FORECAST CONTENT
+=============================== */
+
+/* Day name */
+.forecast-card h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Temperature */
+.forecast-card p:first-of-type {
+    font-size: 1.8rem;
+    color: #667eea;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Description */
+.forecast-card p:last-of-type {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: capitalize;
+}
+
+/* Icon */
+.forecast-card img {
+    width: 60px;
+    height: 60px;
+}
+
+
+/* ===============================
+   RESPONSIVE DESIGN
+=============================== */
+@media (max-width: 768px) {
+    .forecast-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .forecast-card {
+        padding: 15px;
+    }
+
+    .forecast-card h4 {
+        font-size: 1rem;
+    }
+
+    .forecast-card p:first-of-type {
+        font-size: 1.5rem;
+    }
+
+    .forecast-card img {
+        width: 50px;
+        height: 50px;
+    }
+}
