@@ -1,46 +1,52 @@
 // WeatherApp Constructor Function
 function WeatherApp(apiKey) {
-    // Store API key
     this.apiKey = apiKey;
-
-    // Store API URLs
     this.apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
     this.forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast';
-
-    // Store DOM element references
+    
+    // Existing DOM references
     this.searchBtn = document.getElementById('search-btn');
     this.cityInput = document.getElementById('city-input');
     this.weatherDisplay = document.getElementById('weather-display');
-
-    // Initialize app
+    
+    // TODO: Add new DOM references
+    this.recentSearchesSection = document.getElementById('recent-searches-section');
+    this.recentSearchesContainer = document.getElementById('recent-searches-container');
+    
+    // TODO: Initialize recent searches array
+    this.recentSearches = [];
+    
+    // TODO: Set maximum number of recent searches to save
+    this.maxRecentSearches = 5;
+    
     this.init();
 }
 // Init method
 WeatherApp.prototype.init = function() {
-    // Click event (with bind)
-    this.searchBtn.addEventListener(
-        'click',
-        this.handleSearch.bind(this)
-    );
+    this.searchBtn.addEventListener('click', this.handleSearch.bind(this));
 
-    // Enter key event
-    this.cityInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
+    this.cityInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
             this.handleSearch();
         }
-    });
-
-    // Show welcome message
-    this.showWelcome();
+    }.bind(this));
+    const clearBtn = document.getElementById('clear-history-btn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', this.clearHistory.bind(this));
+    }
+    
+    this.loadRecentSearches();
+    this.loadLastCity();
 };
 WeatherApp.prototype.showWelcome = function() {
     const welcomeHTML = `
         <div class="welcome-message">
             <h2>🌤️ Weather App</h2>
-            <p>Enter a city name to get started!</p>
+            <p>Search for a city to get started</p>
+            <p>Try: London, Paris, Tokyo</p>
         </div>
     `;
-
+    
     this.weatherDisplay.innerHTML = welcomeHTML;
 };
 // Handle search
@@ -69,33 +75,95 @@ WeatherApp.prototype.getWeather = async function(city) {
     this.showLoading();
     this.searchBtn.disabled = true;
     this.searchBtn.textContent = 'Searching...';
-
-    const currentWeatherUrl = `${this.apiUrl}?q=${city}&appid=${this.apiKey}&units=metric`;
-
+    
+    const currentUrl = `${this.apiUrl}?q=${city}&appid=${this.apiKey}&units=metric`;
+    
     try {
         const [currentWeather, forecastData] = await Promise.all([
-            axios.get(currentWeatherUrl),
+            axios.get(currentUrl),
             this.getForecast(city)
         ]);
-
+        
         this.displayWeather(currentWeather.data);
         this.displayForecast(forecastData);
-
+        
+        // TODO: Save this successful search to recent searches
+        this.saveRecentSearch(city);
+        
+        //TODO: Save as last searched city
+        localStorage.setItem('lastCity', city);
+        
     } catch (error) {
         console.error('Error:', error);
-
         if (error.response && error.response.status === 404) {
-            this.showError('City not found. Please check spelling.');
+            this.showError('City not found. Please check spelling and try again.');
         } else {
-            this.showError('Something went wrong. Please try again.');
+            this.showError('Something went wrong. Please try again later.');
         }
-
     } finally {
         this.searchBtn.disabled = false;
-        this.searchBtn.textContent = '🔍 Search';
+        this.searchBtn.textContent = 'Search';
     }
 };
-
+WeatherApp.prototype.loadRecentSearches = function() {
+    const saved = localStorage.getItem('recentSearches');
+    
+    if (saved) {
+        this.recentSearches = JSON.parse(saved);
+    }
+    
+    this.displayRecentSearches();
+};
+WeatherApp.prototype.saveRecentSearch = function(city) {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+    
+    const index = this.recentSearches.indexOf(cityName);
+    if (index > -1) {
+        this.recentSearches.splice(index, 1);
+    }
+    
+    this.recentSearches.unshift(cityName);
+    
+    if (this.recentSearches.length > this.maxRecentSearches) {
+        this.recentSearches.pop();
+    }
+    
+    localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
+    
+    this.displayRecentSearches();
+};
+WeatherApp.prototype.displayRecentSearches = function() {
+    this.recentSearchesContainer.innerHTML = '';
+    
+    if (this.recentSearches.length === 0) {
+        this.recentSearchesSection.style.display = 'none';
+        return;
+    }
+    
+    this.recentSearchesSection.style.display = 'block';
+    
+    this.recentSearches.forEach(function(city) {
+        const btn = document.createElement('button');
+        btn.className = 'recent-search-btn';
+        btn.textContent = city;
+        
+        btn.addEventListener('click', function() {
+            this.cityInput.value = city;
+            this.getWeather(city);
+        }.bind(this));
+        
+        this.recentSearchesContainer.appendChild(btn);
+    }.bind(this));
+};
+WeatherApp.prototype.loadLastCity = function() {
+    const lastCity = localStorage.getItem('lastCity');
+    
+    if (lastCity) {
+        this.getWeather(lastCity);
+    } else {
+        this.showWelcome();
+    }
+};
 // ===============================
 // DISPLAY WEATHER
 // ===============================
@@ -199,6 +267,13 @@ WeatherApp.prototype.displayForecast = function(data) {
 
     // Append (not replace)
     this.weatherDisplay.innerHTML += forecastSection;
+};
+WeatherApp.prototype.clearHistory = function() {
+    if (confirm('Clear all recent searches?')) {
+        this.recentSearches = [];
+        localStorage.removeItem('recentSearches');
+        this.displayRecentSearches();
+    }
 };
 // ===============================
 // INITIALIZE APP
