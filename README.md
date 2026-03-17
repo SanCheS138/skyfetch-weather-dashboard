@@ -34,13 +34,13 @@ A beautiful, interactive weather dashboard that provides real-time weather data 
 
 ## 🚀 Live Demo
 
-[https://skyfetch-weather-nine.vercel.app/]
+[(https://skyfetch-weather-nine.vercel.app/)]
 
 ## 💻 Local Setup
 
 1. Clone the repository:
 
-`git clone https://github.com/SanCheS138/skyfetch-weather-dashboard.git`
+git clone https://github.com/SanCheS138/skyfetch-weather-dashboard.git
 Navigate to project directory:
 `cd skyfetch-weather-dashboard`
 Get your free API key from OpenWeatherMap
