@@ -34,16 +34,12 @@ A beautiful, interactive weather dashboard that provides real-time weather data 
 
 ## 🚀 Live Demo
 
-[Add your Vercel URL here after deployment]
-
-## 📸 Screenshots
-
-[Add screenshots after deployment]
+[(https://skyfetch-weather-nine.vercel.app/)]
 
 ## 💻 Local Setup
 
 1. Clone the repository:
-```bash
+
 git clone https://github.com/SanCheS138/skyfetch-weather-dashboard.git
 Navigate to project directory:
 cd skyfetch-weather-dashboard
