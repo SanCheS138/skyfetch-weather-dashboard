@@ -49,6 +49,8 @@ Replace `8486cb9b2c1ac6800f7befd1ab97a300`in app.js with your actual API key
 
 Open index.html in your browser
 
+Author: Sanjay - 138
+
 📝 License
 This project is open source and available under the MIT License.
 
